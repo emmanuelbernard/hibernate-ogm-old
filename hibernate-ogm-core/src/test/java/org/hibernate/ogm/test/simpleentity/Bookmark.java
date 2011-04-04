@@ -26,7 +26,6 @@ public class Bookmark {
 	public void setDescription(String description) { this.description = description; }
 	private String description;
 
-	@Column(name = "url")
 	public URL getUrl() { return url; }
 	public void setUrl(URL url ) { this.url = url; }
 	private URL url; 
