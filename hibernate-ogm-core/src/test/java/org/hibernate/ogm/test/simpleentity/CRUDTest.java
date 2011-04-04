@@ -26,7 +26,6 @@ import java.net.URL;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.ogm.type.UrlType;
 
 /**
  * @author Emmanuel Bernard
