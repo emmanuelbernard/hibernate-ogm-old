@@ -20,6 +20,7 @@
  */
 package org.hibernate.ogm.type;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.hibernate.HibernateException;
@@ -29,6 +30,15 @@ import org.hibernate.ogm.type.descriptor.StringMappedGridTypeDescriptor;
 import org.hibernate.type.descriptor.java.BigIntegerTypeDescriptor;
 
 /**
+ * Type descriptor for translating a BigInteger Java type into its string representation
+ * in order to be stored in a key/value deposit.
+ * 
+ * The {@link BigInteger#toString} method is used to get a string representation, this method use
+ * the plain notation with minus symbol only  that should be cross platform/language usable.
+ * 
+ * @see java.math.BigInteger
+ * @see java.math.BigInteger#toString()
+ * 
  * @author Nicolas Helleringer
  */
 public class BigIntegerType extends AbstractGenericBasicType<BigInteger> {
