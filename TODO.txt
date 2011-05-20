@@ -1,0 +1,15 @@
+Association support TODO
+------------------------
+
++ Use AtomicMap instead of a raw map for
+AtomicMap<RowKey,Map<String,Object>>
+
++ Encapsulate AtomicMap get / put into GridDialect contracts (like it's done for entities)
+ => PropertyMetadataProvider
+  getCollectionMetadata() (new) and flushToCache() (put)
+  OgmCollectionPersister read (getSize, deleteRow)
+
++ optimize PropertyMetadataProvider.findByMatchingTuple
+The algorithm, finds by value and infer the key from it. It is possible that we can compute the key without
+nagivating the map of <RowKey,Map<String,Object>>
+
