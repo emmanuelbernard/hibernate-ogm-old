@@ -25,18 +25,29 @@ import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.type.AbstractStandardBasicType;
+import org.hibernate.type.CustomType;
+import org.hibernate.type.EnumType;
 import org.hibernate.type.Type;
 import org.hibernate.type.descriptor.java.BigDecimalTypeDescriptor;
 import org.hibernate.type.descriptor.java.BigIntegerTypeDescriptor;
 import org.hibernate.type.descriptor.java.BooleanTypeDescriptor;
 import org.hibernate.type.descriptor.java.ByteTypeDescriptor;
+import org.hibernate.type.descriptor.java.CalendarDateTypeDescriptor;
+import org.hibernate.type.descriptor.java.CalendarTypeDescriptor;
 import org.hibernate.type.descriptor.java.ClassTypeDescriptor;
+import org.hibernate.type.descriptor.java.DateTypeDescriptor;
 import org.hibernate.type.descriptor.java.DoubleTypeDescriptor;
 import org.hibernate.type.descriptor.java.IntegerTypeDescriptor;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.java.JdbcDateTypeDescriptor;
+import org.hibernate.type.descriptor.java.JdbcTimeTypeDescriptor;
+import org.hibernate.type.descriptor.java.JdbcTimestampTypeDescriptor;
 import org.hibernate.type.descriptor.java.LongTypeDescriptor;
+import org.hibernate.type.descriptor.java.PrimitiveByteArrayTypeDescriptor;
 import org.hibernate.type.descriptor.java.StringTypeDescriptor;
 import org.hibernate.type.descriptor.java.UrlTypeDescriptor;
+import org.hibernate.type.descriptor.java.UUIDTypeDescriptor;
+import org.hibernate.usertype.UserType;
 
 /**
  * @author Emmanuel Bernard
@@ -57,6 +68,13 @@ public class TypeTranslator {
 		typeConverter.put( BigIntegerTypeDescriptor.INSTANCE, BigIntegerType.INSTANCE );
 		typeConverter.put( BooleanTypeDescriptor.INSTANCE, BooleanType.INSTANCE );
 		typeConverter.put( ByteTypeDescriptor.INSTANCE, ByteType.INSTANCE );
+		typeConverter.put( JdbcDateTypeDescriptor.INSTANCE, DateType.INSTANCE );
+		typeConverter.put( JdbcTimestampTypeDescriptor.INSTANCE, TimestampType.INSTANCE );
+		typeConverter.put( JdbcTimeTypeDescriptor.INSTANCE, TimeType.INSTANCE );
+		typeConverter.put( CalendarDateTypeDescriptor.INSTANCE, CalendarDateType.INSTANCE );
+		typeConverter.put( CalendarTypeDescriptor.INSTANCE, CalendarType.INSTANCE );
+		typeConverter.put( PrimitiveByteArrayTypeDescriptor.INSTANCE, PrimitiveByteArrayType.INSTANCE );
+		typeConverter.put( UUIDTypeDescriptor.INSTANCE, UUIDType.INSTANCE );
 	}
 
 	public GridType getType(Type type) {
@@ -70,6 +88,16 @@ public class TypeTranslator {
 				throw new HibernateException( "Unable to find a GridType for " + exposedType.getClass().getName() );
 			}
 			return gridType;
+		}
+		else if ( type instanceof CustomType ) {
+			CustomType cType = (CustomType) type;
+			final UserType userType = cType.getUserType();
+			if ( userType instanceof EnumType ) {
+				EnumType enumType = (EnumType) userType;
+				//should we cache that (the key must be enumClass / isOrdinal
+				return new org.hibernate.ogm.type.EnumType( cType, enumType );
+			}
+			//let it go it will eventually fail
 		}
 		else if ( type instanceof org.hibernate.type.ComponentType ) {
 			org.hibernate.type.ComponentType componentType = (org.hibernate.type.ComponentType) type;

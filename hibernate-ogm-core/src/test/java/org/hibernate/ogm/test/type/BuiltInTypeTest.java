@@ -23,6 +23,9 @@ package org.hibernate.ogm.test.type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -45,13 +48,30 @@ public class BuiltInTypeTest extends OgmTestCase {
 		b.setId("42");
 		b.setDescription( "Hibernate Site" );
 		b.setUrl(new URL("http://www.hibernate.org/"));
-		BigDecimal weigth= new BigDecimal("21.77");
-		b.setSiteWeigth( weigth);
+		BigDecimal weight = new BigDecimal("21.77");
+		b.setSiteWeight( weight);
 		BigInteger visitCount= new BigInteger( "444");
 		b.setVisitCount(visitCount);
 		b.setFavourite(true);
 		Byte displayMask= new Byte((byte) '8');
 		b.setDisplayMask(displayMask);
+		Date now = new Date( System.currentTimeMillis() );
+		b.setCreationDate( now );
+		b.setDestructionDate( now );
+		b.setUpdateDate( now );
+		final Calendar iCal = Calendar.getInstance();
+		iCal.setTimeInMillis( now.getTime() );
+		b.setCreationCalendar( iCal );
+		b.setDestructionCalendar( iCal );
+		byte[] blob = new byte[5];
+		blob[0] = '1';
+		blob[1] = '2';
+		blob[2] = '3';
+		blob[3] = '4';
+		blob[4] = '5';
+		b.setBlob( blob );
+		UUID serialNumber= UUID.randomUUID();
+		b.setSerialNumber(serialNumber);
 		session.persist( b );
 		transaction.commit();
 
@@ -60,16 +80,16 @@ public class BuiltInTypeTest extends OgmTestCase {
 		transaction = session.beginTransaction();
 		b = (Bookmark) session.get( Bookmark.class, b.getId() );
 		assertEquals("http://www.hibernate.org/",b.getUrl().toString());
-		assertEquals(weigth,b.getSiteWeigth());
+		assertEquals(weight,b.getSiteWeight());
 		assertEquals(visitCount,b.getVisitCount());
 		assertEquals(new Boolean(true),b.isFavourite());
 		assertEquals(displayMask,b.getDisplayMask());
+		assertEquals(serialNumber,b.getSerialNumber());
 		session.delete( b );
 		transaction.commit();
 
 		session.close();
 	}
-
 
 	@Override
 	protected Class<?>[] getAnnotatedClasses() {

@@ -10,6 +10,9 @@
 *.iml
 atlassian-ide-plugin.xml
 
+#XMLEditor
+*.*xml~
+
 # Eclipse specific files/directories
 .classpath
 .project
@@ -21,3 +24,6 @@ atlassian-ide-plugin.xml
 
 #build
 target/
+
+#custom scripts
+*.sh

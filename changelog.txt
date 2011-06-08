@@ -1,0 +1,8 @@
+Hibernate OGM Changelog
+==========================
+
+3.0.0.Alpha1 (29-04-2011)
+-------------------------
+
+Initial release
+

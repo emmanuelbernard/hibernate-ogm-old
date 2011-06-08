@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Hibernate, Relational Persistence for Idiomatic Java
+  ~
+  ~  Copyright (c) 2011, Red Hat, Inc. and/or its affiliates or third-party contributors as
+  ~  indicated by the @author tags or express copyright attribution
+  ~  statements applied by the authors.  All third-party contributions are
+  ~  distributed under license by Red Hat, Inc.
+  ~
+  ~  This copyrighted material is made available to anyone wishing to use, modify,
+  ~  copy, or redistribute it subject to the terms and conditions of the GNU
+  ~  Lesser General Public License, as published by the Free Software Foundation.
+  ~
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  ~  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+  ~  for more details.
+  ~
+  ~  You should have received a copy of the GNU Lesser General Public License
+  ~  along with this distribution; if not, write to:
+  ~  Free Software Foundation, Inc.
+  ~  51 Franklin Street, Fifth Floor
+  ~  Boston, MA  02110-1301  USA
+  -->
+<!--
+  @author Emmanuel Bernard <emmanuel@hibernate.org>
+-->
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "ogm.ent">
+%BOOK_ENTITIES;
+]>
+<book>
+  <bookinfo>
+    <title>Hibernate OGM</title>
+
+    <subtitle>Hibernate Object/Grid Mapper</subtitle>
+
+    <subtitle>Reference Guide</subtitle>
+
+    <releaseinfo>&version;</releaseinfo>
+
+    <mediaobject>
+      <imageobject role="fo">
+        <imagedata align="center" fileref="hibernate_ogm_600px.png" />
+      </imageobject>
+
+      <imageobject role="html">
+        <imagedata depth="3cm" fileref="hibernate_ogm_600px.png" />
+      </imageobject>
+    </mediaobject>
+  </bookinfo>
+
+  <toc></toc>
+
+  <preface id="preface">
+    <title>Preface</title>
+
+    <para>Hibernate Object/Grid Mapper (OGM) is a persistence engine providing
+    Java Persistence (JPA) support for NoSQL storage solutions. It reuses
+    Hibernate Core's object introspection and composition/decomposition engine
+    but persists entities into a key/value store instead of a relational
+    database. It reuses the Java Persistence Query Language (JP-QL) as an
+    interface to querying stored data.</para>
+
+    <para>Hibernate OGM is developed specifically with Infinispan - an open
+    source distributed in-memory key/value store - in mind, but the longer
+    term goal is to abstract Hibernate OGM to work with any NoSQL store, not
+    just key/value stores, similar to the way Hibernate Core works with any
+    SQL-based relational database, regardless of specific SQL dialect.</para>
+
+    <para>If you wish to help with this abstraction effort or with Hibernate
+    OGM in general, please refer to <xref
+    linkend="ogm-howtocontribute" />.</para>
+
+    <para>Hibernate OGM is released under the LGPL open source license.</para>
+
+    <warning>
+      <para>This documentation and this project are work in progress. Please
+      give us feedback on</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>what you like</para>
+        </listitem>
+
+        <listitem>
+          <para>what you don't like</para>
+        </listitem>
+
+        <listitem>
+          <para>what is confusing</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Check <xref linkend="ogm-howtocontribute-contribute" /> on how to
+      contact us.</para>
+    </warning>
+
+    <section>
+      <title>Goals</title>
+
+      <para>Hibernate OGM tries to achieve a few goals:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>offer a familiar environment for NoSQL stores</para>
+        </listitem>
+
+        <listitem>
+          <para>encourage new data usage patterns and NoSQL exploration in
+          more "traditional" enterprises</para>
+        </listitem>
+
+        <listitem>
+          <para>help scale existing applications with a NoSQL front end to a
+          more traditional database</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>NoSQL can be very disconcerting as it is composed of many
+      different solutions with different benefits and drawbacks. Speaking only
+      of types, NoSQL is at least categorized in four families:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>graph oriented databases</para>
+        </listitem>
+
+        <listitem>
+          <para>key / value stores: essentially Maps but with different
+          behaviors and ideas behind various products (data grids, persistent
+          with strong or eventual consistency etc)</para>
+        </listitem>
+
+        <listitem>
+          <para>document based datastores: contains as value semi structured
+          documents (think JSON)</para>
+        </listitem>
+
+        <listitem>
+          <para>column based datastores</para>
+        </listitem>
+      </itemizedlist>
+
+      <mediaobject>
+        <imageobject role="html">
+          <imagedata align="center" fileref="images/nosql.png" format="PNG"
+                     role="html" />
+        </imageobject>
+
+        <imageobject role="fo">
+          <imagedata align="center" depth="" fileref="images/nosql.png"
+                     format="PNG" role="fo" scalefit="1" width="12cm" />
+        </imageobject>
+
+        <caption><para>Various NoSQL families</para></caption>
+      </mediaobject>
+
+      <para>Each have different benefits and drawbacks and one solution might
+      fit a use case better than an other. However access patterns and APIs
+      are different from one product to the others.</para>
+
+      <para>While Hibernate OGM will not try to address all of these problem,
+      simplify NoSQL access by offering a familiar programmatic model and API
+      that is JPA will help people explore various datastore alternatives,
+      including relational databases.</para>
+
+      <para>Hibernate OGM also aims at helping people scale traditional
+      relational databases by providing a NoSQL front-end and keeping the same
+      JPA APIs and domain model.</para>
+    </section>
+
+    <section>
+      <title>What we have today</title>
+
+      <para>Today, Hibernate OGM does not support all of its goals. Here is a
+      list of what we have:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>store data in Infinispan's datagrid</para>
+        </listitem>
+
+        <listitem>
+          <para>CRUD support for entities</para>
+        </listitem>
+
+        <listitem>
+          <para>polymorphic entities</para>
+        </listitem>
+
+        <listitem>
+          <para>embeddable objects (aka components)</para>
+        </listitem>
+
+        <listitem>
+          <para>basic types support (numbers, String, URL, Date, enums
+          etc)</para>
+        </listitem>
+
+        <listitem>
+          <para>support for associations</para>
+        </listitem>
+
+        <listitem>
+          <para>support for collections (Set, List, Map, etc)</para>
+        </listitem>
+
+        <listitem>
+          <para>support for Hibernate Search's full-text queries</para>
+        </listitem>
+
+        <listitem>
+          <para>JPA and native Hibernate Core API support</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Use cases</title>
+
+      <para>Here are a few areas where Hibernate OGM can be beneficial:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>need to scale your data store up and down rapidly (via
+          Infinispan's capability)</para>
+        </listitem>
+
+        <listitem>
+          <para>keep your domain model generic of the underlying datastore
+          technology (RDBMS, Infinispan, NoSQL)</para>
+        </listitem>
+
+        <listitem>
+          <para>explore the best tool for the use case while keeping your
+          development familiar</para>
+        </listitem>
+
+        <listitem>
+          <para>use a familiar JPA front end to Infinispan's datagrid</para>
+        </listitem>
+
+        <listitem>
+          <para>use Hibernate Search full-text search / text analysis
+          capabilities and store the data set in an elastic grid</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>These are a few ideas and the list will grow when we will add more
+      capabilities to Hibernate OGM.</para>
+    </section>
+  </preface>
+
+  <xi:include href="modules/how-to-contribute.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <xi:include href="modules/getting-started.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <xi:include href="modules/architecture.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <xi:include href="modules/configuration.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <xi:include href="modules/mapping.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <xi:include href="modules/query.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <xi:include href="modules/infinispan.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+</book>

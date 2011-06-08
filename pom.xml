@@ -49,9 +49,9 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/emmanuelbernard/hibernate-ogm.git</connection>
-        <developerConnection>scm:git:git@github.com:emmanuelbernard/hibernate-ogm.git</developerConnection>
-        <url>http://github.com/emmanuelbernard/hibernate-ogm</url>
+        <connection>scm:git:git://github.com/hibernate/hibernate-ogm.git</connection>
+        <developerConnection>scm:git:git@github.com:hibernate/hibernate-ogm.git</developerConnection>
+        <url>http://github.com/hibernate/hibernate-ogm</url>
     </scm>
 
     <organization>
@@ -117,9 +117,10 @@
     <properties>
         <slf4jVersion>1.6.1</slf4jVersion>
         <infinispanVersion>5.0.0-SNAPSHOT</infinispanVersion>
-        <hibernateVersion>3.6.3.Final</hibernateVersion>
-        <hibernateSearchVersion>3.4.0-SNAPSHOT</hibernateSearchVersion>
-        <jbossjtaVersion>4.14.0.Final</jbossjtaVersion>
+        <hibernateVersion>3.6.4.Final</hibernateVersion>
+        <hibernateSearchVersion>3.4.0.Final</hibernateSearchVersion>
+        <luceneVersion>3.1.0</luceneVersion>
+        <jbossjtaVersion>4.15.0.Final</jbossjtaVersion>
         <jbossNamingVersion>5.0.6.CR1</jbossNamingVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- 
@@ -139,11 +140,13 @@
                 <groupId>javax.transaction</groupId>
                 <artifactId>jta</artifactId>
                 <version>1.1</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.hibernate.javax.persistence</groupId>
                 <artifactId>hibernate-jpa-2.0-api</artifactId>
                 <version>1.0.0.Final</version>
+                <scope>provided</scope>
             </dependency>
 
             <!-- Hibernate Core -->
@@ -170,8 +173,19 @@
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search-infinispan</artifactId>
+                <version>${hibernateSearchVersion}</version>
+            </dependency>
+            <dependency>
+                <artifactId>lucene-core</artifactId>
+                <groupId>org.apache.lucene</groupId>
+                <version>${luceneVersion}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-testing</artifactId>
                 <version>${hibernateVersion}</version>
+                <scope>test</scope>
             </dependency>
             
             <!-- Logging -->
@@ -179,6 +193,7 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4jVersion}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -193,6 +208,11 @@
                 <artifactId>infinispan-core</artifactId>
                 <version>${infinispanVersion}</version>
             </dependency>
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-lucene-directory</artifactId>
+                <version>${infinispanVersion}</version>
+            </dependency>
 
             <!-- utils -->
 
@@ -201,11 +221,13 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.8.2</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.easytesting</groupId>
                 <artifactId>fest-assert</artifactId>
                 <version>1.4</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.jbossts</groupId>
@@ -439,7 +461,7 @@
                     <descriptors>
                         <descriptor>${basedir}/src/main/assembly/dist.xml</descriptor>
                     </descriptors>
-                    <finalName>hibernate-search-${project.version}</finalName>
+                    <finalName>hibernate-ogm-${project.version}</finalName>
                 </configuration>
             </plugin>
             <plugin>
@@ -573,6 +595,31 @@
                     <artifactId>maven-help-plugin</artifactId>
                     <version>2.1.1</version>
                 </plugin>
+                <plugin>
+                    <!-- This plugin's configuration is used in m2e only. -->
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.jboss.maven.plugins</groupId>
+                                        <artifactId>maven-injection-plugin</artifactId>
+                                        <versionRange>[1.0.2,)</versionRange>
+                                        <goals>
+                                            <goal>bytecode</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -599,6 +646,18 @@
     </distributionManagement>
 
     <profiles>
+        <profile>
+            <id>doc</id>
+            <activation>
+                <property>
+                    <name>buildDocs</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>hibernate-ogm-documentation</module>
+            </modules>
+        </profile>
         <!-- =============================== -->
         <!-- Database profiles               -->
         <!-- =============================== -->

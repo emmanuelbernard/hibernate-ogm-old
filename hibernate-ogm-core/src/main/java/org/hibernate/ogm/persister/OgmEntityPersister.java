@@ -104,6 +104,7 @@ public class OgmEntityPersister extends AbstractEntityPersister implements Entit
 			final SessionFactoryImplementor factory,
 			final Mapping mapping) throws HibernateException {
 		super(persistentClass, cacheAccessStrategy, factory);
+		log.trace( "Creating OgmEntityPersister for {}", persistentClass.getClassName() );
 		tableName = persistentClass.getTable().getQualifiedName(
 				factory.getDialect(),
 				factory.getSettings().getDefaultCatalogName(),
@@ -249,7 +250,11 @@ public class OgmEntityPersister extends AbstractEntityPersister implements Entit
 	}
 
 	private Map<String, Object> getResultsetById(Serializable id, Cache<EntityKey, Map<String, Object>> cache) {
-		final Map<String,Object> resultset = cache.get( new EntityKeyBuilder().entityPersister( this ).id(id).getKey() );
+		final Map<String,Object> resultset = cache.get(
+				new EntityKeyBuilder().entityPersister( this )
+						.id( id )
+						.getKey()
+		);
 		return resultset;
 	}
 
@@ -781,7 +786,7 @@ public class OgmEntityPersister extends AbstractEntityPersister implements Entit
 			int tableIndex,
 			Serializable id,
 			SessionImplementor session) {
-		new Dehydrator()
+		new EntityDehydrator()
 				.fields( fields )
 				.gridPropertyTypes( gridPropertyTypes )
 				.gridIdentifierType( gridIdentifierType )
@@ -948,7 +953,7 @@ public class OgmEntityPersister extends AbstractEntityPersister implements Entit
 			entityCache.remove( key );
 
 			//delete property metadata
-			new Dehydrator()
+			new EntityDehydrator()
 				.gridPropertyTypes( gridPropertyTypes )
 				.gridIdentifierType( gridIdentifierType )
 				.id( id )
@@ -1050,10 +1055,10 @@ public class OgmEntityPersister extends AbstractEntityPersister implements Entit
 		return 0;
 	}
 
-	//FIXME useful?
 	@Override
 	protected String filterFragment(String alias) throws MappingException {
-		throw new HibernateException( "Filters are not supported in OGM");
+		//TODO support filter in OGM??? How???
+		return "";
 //		return hasWhere() ?
 //			" and " + getSQLWhereString(alias) :
 //			"";
